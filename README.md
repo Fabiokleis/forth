@@ -20,13 +20,13 @@ data Evaluator = Evaluator {
 ```
 A full compiled code will populate `Program` and `Table` with expressions:
 1. Program: All expressions compiled, a list of expressions
-2. Table: Store compiled symbols, a list of tuples string expressions
+2. Table: Store compiled words, a list of tuple string expressions
 
 ## Expressions
 ```haskell
 data Expr =
   Lit Int
-  | Sym String -- symbol defs
+  | Word String -- word definition
   | Add
   | Sub
   | Mul
@@ -43,27 +43,15 @@ data Expr =
   deriving Show
 ```
 
-
-## Parser
-The result `Program` and `Table` are result of parsing:
-```haskell
-parseTokens :: String -> Either (String, Program, Table) (Program, Table)
-parse :: [String] -> Program -> Table -> Either (String, Program, Table) (Program, Table)
-parseExpr :: String -> Either String Expr
-```
-1. parseTokens: Expects the source code as an input and break it into tokens
-2. parse: Get a list of tokens and populates `Program` and `Table` based on parsed expressions
-    - checks for definitions: Recursively match the current token to definition `Sym`  
-    - parseExpr: Match the current token to `Expr` 
 ## Evaluator
-To evaluate a full compiled `Program` and `Table` 
+To evaluate a full compiled `Program` and `Table` use:
 ```haskell
 eval :: Evaluator -> IO Evaluator
 ```
 eval get a single `Evalutator` data and recursively runs all expressions using `Program` and `Table`
 by pushing/poping values from top of the `Stack`, and produces side effects for commands like `Dot` and `Emit`.
 
-## Example
+### GHCI Example
 This following program outputs 'forth' in the standard output:
 ```haskell
 ghci> :l forth.hs
@@ -74,3 +62,24 @@ forth
 Evaluator {program = [], stack = [], table = [("out",[Emit,Sym "h",Emit,Sym "t",Emit,Sym "r",Emit,Sym "o",Emit,Sym "f"]),("h",[Lit 104]),("t",[Lit 116]),("r",[Lit 114]),("o",[Lit 111]),("f",[Lit 102])]}
 ```
 
+## Forth Repl 
+Call main to start an interactive repl:
+```haskell
+ghci> :l forth.hs
+ghci> main
+: three 3 ;
+  ok
+: four 4 ;
+  ok
+three four * .
+12  ok
+```
+
+## Running 4fh code
+Inside `GHCI` load `forth.hs` and run `hello.4fh` to print 'hello, world':
+```haskell
+ghci> :l forth.ts
+ghci> run4fh "hello.4fh"
+hello, world
+
+```

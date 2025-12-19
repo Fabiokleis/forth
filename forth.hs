@@ -93,7 +93,7 @@ eval (Evaluator (expr:rest) stack table) =
     Sub -> binaryOp (-)
     Mul -> binaryOp (*)
     Div -> binaryOp div
-    Lf -> undefined -- todo
+    Lf -> undefined
     Cr -> undefined -- todo
     Dot ->
       case stack of
@@ -156,11 +156,11 @@ repl state =
     putStrLn "  ok"
     repl interpreted
 
-read4fh :: FilePath -> IO ()
-read4fh filepath = do
+run4fh :: FilePath -> IO ()
+run4fh filepath = do
    f <- readFile filepath
    interpret f (Evaluator [] [] [])
-   putStrLn "finished!"
+   putStrLn ""
 
 main :: IO ()
 main = repl (Evaluator [] [] [])

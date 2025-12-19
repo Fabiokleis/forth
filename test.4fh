@@ -1,0 +1,9 @@
+1 2 +
+10 20 +
+*
+: my-definition 20 ;
+: my-other-definition 10 ;
+my-definition +
+my-other-definition /
+.
+10 emit

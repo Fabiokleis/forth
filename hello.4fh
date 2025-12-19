@@ -1,0 +1,23 @@
+: h 104 ;
+: e 101 ;
+: l 108 ;
+: o 111 ;
+: w 119 ;
+: r 114 ;
+: d 100 ;
+: comma 44 ;
+: ln 10 ;
+
+: hello-world
+  h emit
+  e emit
+  l dup emit emit
+  o emit
+  w emit
+  o emit
+  r emit
+  l emit
+  d emit
+  ln emit ;
+
+hello-world

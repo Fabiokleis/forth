@@ -62,7 +62,7 @@ parse (":":word:rest) prog table =
         Right (iexprs, itable) ->
           parse next prog ((word, iexprs):itable) 
       where
-        exprs = takeWhile (\x -> x /= ";") rest -- check for nested defs
+        exprs = takeWhile (\x -> x /= ";") rest -- need check for nested defs
         next = tail (dropWhile (\x -> x /= ";") rest) -- fails on unfinished defs 
 parse (token:rest) prog table =
     case reads token :: [(Int, String)] of
@@ -138,21 +138,29 @@ eval (Evaluator (expr:rest) stack table) =
       case stack of
         (y:x:xs) -> eval (Evaluator rest (f x y : xs) table)
         _ -> error $ "**stack underflow binary operator**: " ++ show expr
-  
-interpreter :: Evaluator -> IO ()
-interpreter state@(Evaluator _ estack etable) =
-  do
-    line <- getLine
-    case parseTokens line etable of
+
+interpret :: String -> Evaluator -> IO Evaluator
+interpret line state@(Evaluator _ estack etable) =
+  case parseTokens line etable of
       Left (err, program, table) -> do
         putStrLn $ "program: " ++ show program
         putStrLn $ "table: " ++ show table
-        putStrLn $ "error: " ++ err
-        interpreter state
-      Right (iprog, itable) -> do
-        evaluated <- eval (Evaluator iprog estack itable)
-        putStrLn "  ok"
-        interpreter evaluated
+        error err
+      Right (iprog, itable) -> eval (Evaluator iprog estack itable)
+
+repl :: Evaluator -> IO ()
+repl state = 
+  do
+    line <- getLine
+    interpreted <- interpret line state
+    putStrLn "  ok"
+    repl interpreted
+
+read4fh :: FilePath -> IO ()
+read4fh filepath = do
+   f <- readFile filepath
+   interpret f (Evaluator [] [] [])
+   putStrLn "finished!"
 
 main :: IO ()
-main = interpreter (Evaluator [] [] [])
+main = repl (Evaluator [] [] [])

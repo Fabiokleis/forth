@@ -2,7 +2,7 @@
 Simple implementation for very few limited subset of [forth](https://en.wikipedia.org/wiki/Forth_(programming_language)) in haskell
 
 
-feel free to add more feature by contributing. 
+feel free to add more features by contributing. 
 
 ## Structure
 Program parses and evaluates all expressions using the following structure:

@@ -75,12 +75,6 @@ parse (token:rest) prog table =
                  Just _ -> parse rest ((Word token) : prog) table
                  Nothing -> Left (err, prog, table)
 
-parseTokens :: String -> Table -> Either (String, Program, Table) (Program, Table)
-parseTokens code reftable =
-  case parse (words code) [] reftable of
-    Right (prog, table) -> Right ((reverse prog), table)
-    Left e -> Left e
-
 stackUnderflow :: Expr -> String
 stackUnderflow expr = "**stack underflow**: " ++ show expr
 
@@ -98,7 +92,7 @@ eval (Evaluator (expr:rest) stack table) =
     Dot ->
       case stack of
         (x:xs) -> do
-          putStr (show x ++ " ")
+          putStr $ show x
           eval (Evaluator rest xs table)
         _ -> error $ stackUnderflow expr
     Emit ->
@@ -139,8 +133,14 @@ eval (Evaluator (expr:rest) stack table) =
         (y:x:xs) -> eval (Evaluator rest (f x y : xs) table)
         _ -> error $ "**stack underflow binary operator**: " ++ show expr
 
+parseTokens :: String -> Table -> Either (String, Program, Table) (Program, Table)
+parseTokens code reftable =
+  case parse (words code) [] reftable of
+    Right (prog, table) -> Right ((reverse prog), table)
+    Left e -> Left e
+
 interpret :: String -> Evaluator -> IO Evaluator
-interpret line state@(Evaluator _ estack etable) =
+interpret line (Evaluator _ estack etable) =
   case parseTokens line etable of
       Left (err, program, table) -> do
         putStrLn $ "program: " ++ show program

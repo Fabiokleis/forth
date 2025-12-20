@@ -1,0 +1,7 @@
+: f 102 ;
+: o 111 ;
+: r 114 ;
+: t 116 ;
+: h 104 ;
+: out f emit o emit r emit t emit h emit ;
+out 10 emit

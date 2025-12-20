@@ -56,10 +56,10 @@ This following program outputs 'forth' in the standard output:
 ```haskell
 ghci> :l forth.hs
 ghci> let source = ": f 102 ; : o 111 ; : r 114 ; : t 116 ; : h 104 ; : out f emit o emit r emit t emit h emit ; out 10 emit"
-ghci> let Right (prog, table) = parseTokens source
+ghci> let Right (prog, table) = parseTokens source []
 ghci> eval (Evaluator prog [] table)
 forth
-Evaluator {program = [], stack = [], table = [("out",[Emit,Sym "h",Emit,Sym "t",Emit,Sym "r",Emit,Sym "o",Emit,Sym "f"]),("h",[Lit 104]),("t",[Lit 116]),("r",[Lit 114]),("o",[Lit 111]),("f",[Lit 102])]}
+Evaluator {program = [], stack = [], table = [("out",[Emit,Word "h",Emit,Word "t",Emit,Word "r",Emit,Word "o",Emit,Word "f"]),("h",[Lit 104]),("t",[Lit 116]),("r",[Lit 114]),("o",[Lit 111]),("f",[Lit 102])]}
 ```
 
 ## Forth Repl 
